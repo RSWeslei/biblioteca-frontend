@@ -8,12 +8,11 @@
           <v-col>
             <v-text-field
               v-model="usuario.id"
-              solo
-              label="Código"
-              clearable
+              rounded
+              placeholder="Nome"
+              color="green"
               outlined
               disabled
-              color="white"
             >
             </v-text-field>
           </v-col>
@@ -22,11 +21,12 @@
           <v-col>
             <v-text-field
               v-model="usuario.nome"
-              solo
+              rounded
+              placeholder="Nome"
+              color="green"
               label="Nome"
               clearable
               outlined
-              color="white"
             >
             </v-text-field>
           </v-col>
@@ -35,11 +35,12 @@
           <v-col>
             <v-text-field
               v-model="usuario.cpfcnpj"
-              solo
-              label="CPF / CNPJ"
+              rounded
+              placeholder="CPF/CNPJ"
+              color="green"
+              label="CPF/CNPJ"
               clearable
               outlined
-              color="white"
             >
             </v-text-field>
           </v-col>
@@ -48,11 +49,12 @@
           <v-col>
             <v-text-field
               v-model="usuario.email"
-              solo
+              rounded
+              placeholder="Email"
+              color="green"
               label="Email"
               clearable
               outlined
-              color="white"
             >
             </v-text-field>
           </v-col>
@@ -61,11 +63,12 @@
           <v-col>
             <v-text-field
               v-model="usuario.telefone"
-              solo
+              rounded
+              placeholder="Telefone"
+              color="green"
               label="Telefone"
               clearable
               outlined
-              color="white"
             >
             </v-text-field>
           </v-col>
@@ -95,7 +98,7 @@
         <v-card-text
           style="text-align: center"
         >
-          Usuario cadastrado
+          {{ cadastroErro ? 'Erro ao cadastrar o usuario' : 'Usuario cadastrado com sucesso' }}
         </v-card-text>
       </v-card>
     </v-dialog>

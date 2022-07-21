@@ -8,12 +8,10 @@
           <v-col>
             <v-text-field
               v-model="livro.id"
-              solo
-              label="Código"
-              clearable
+              rounded
+              placeholder="Código"
               outlined
               disabled
-              color="white"
             >
             </v-text-field>
           </v-col>
@@ -22,11 +20,12 @@
           <v-col>
             <v-text-field
               v-model="livro.titulo"
-              solo
               label="Titulo"
               clearable
               outlined
-              color="white"
+              rounded
+              placeholder="Titulo"
+              color="green"
             >
             </v-text-field>
           </v-col>
@@ -35,11 +34,12 @@
           <v-col>
             <v-text-field
               v-model="livro.sinopse"
-              solo
+              rounded
+              placeholder="Sinopse"
+              color="green"
               label="Sinopse"
               clearable
               outlined
-              color="white"
             >
             </v-text-field>
           </v-col>
@@ -49,7 +49,11 @@
             <v-autocomplete
               v-model="livro.idAutor"
               :items="autores"
+              clearable
               outlined
+              rounded
+              placeholder="Autores"
+              color="green"
               label="Autores"
               item-text="nome"
               item-value="id"
@@ -62,6 +66,10 @@
               v-model="livro.idCategoria"
               :items="categorias"
               outlined
+              rounded
+              clearable
+              placeholder="Categorias"
+              color="green"
               label="Categorias"
               item-text="nome"
               item-value="id"
@@ -93,7 +101,7 @@
         <v-card-text
           style="text-align: center"
         >
-          Livro cadastrado
+           {{ cadastroErro ? 'Erro ao cadastrar o livro' : 'Livro cadastrado com sucesso' }}
         </v-card-text>
       </v-card>
     </v-dialog>

@@ -8,6 +8,7 @@
           <v-col>
             <v-text-field
               v-model="categoria.id"
+              rounded
               placeholder="Código"
               label="Código"
               outlined
@@ -19,7 +20,9 @@
           <v-col>
             <v-text-field
               v-model="categoria.nome"
+              rounded
               placeholder="Nome"
+              color="green"
               label="Nome"
               outlined
             ></v-text-field>
@@ -28,8 +31,8 @@
       </v-container>
     </v-form>
     <v-btn
-      outlined
       @click="cadastrar"
+      color="green"
     >
       Cadastrar
     </v-btn>
@@ -45,7 +48,7 @@
         <v-card-text
           
         >
-          Categoria cadastrada
+          {{ cadastroErro ? 'Erro ao cadastrar a categoria' : 'Categoria cadastrado com sucesso' }}
         </v-card-text>
       </v-card>
     </v-dialog>

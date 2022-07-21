@@ -8,12 +8,13 @@
           <v-col>
             <v-text-field
               v-model="autor.id"
-              solo
+              rounded
+              placeholder="Nome"
+              color="green"
               label="Código"
               clearable
               outlined
               disabled
-              color="white"
             >
             </v-text-field>
           </v-col>
@@ -22,11 +23,12 @@
           <v-col>
             <v-text-field
               v-model="autor.nome"
-              solo
               label="Nome"
+              rounded
+              placeholder="Nome"
               clearable
               outlined
-              color="white"
+              color="green"
             >
             </v-text-field>
           </v-col>
@@ -35,11 +37,12 @@
           <v-col>
             <v-text-field
               v-model="autor.email"
-              solo
+              rounded
+              placeholder="Email"
               label="Email"
               clearable
               outlined
-              color="white"
+              color="green"
             >
             </v-text-field>
           </v-col>
@@ -69,7 +72,7 @@
         <v-card-text
           style="text-align: center"
         >
-          Autor cadastrado
+          {{ cadastroErro ? 'Erro ao cadastrar o autor' : 'Autor cadastrado com sucesso' }}
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -111,7 +114,7 @@ export default {
   watch: {
     cadastrado (val) {
       if (!val) return
-      setTimeout(() => (this.cadastrado = false, this.cadastroErro = false), 3000)
+      setTimeout(() => (this.cadastrado = false, this.cadastroErro = false), 4000)
     },
   }
 }
