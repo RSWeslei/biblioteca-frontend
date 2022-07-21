@@ -2,7 +2,7 @@
   <v-container>
     <h1>Cadastro de Usuarios</h1>
     <hr>
-    <v-form>
+    <v-form v-model="valid">
       <v-container>
         <v-row>
           <v-col>
@@ -27,6 +27,8 @@
               label="Nome"
               clearable
               outlined
+              :rules="rule"
+              required
             >
             </v-text-field>
           </v-col>
@@ -41,6 +43,8 @@
               label="CPF/CNPJ"
               clearable
               outlined
+              :rules="rule"
+              required
             >
             </v-text-field>
           </v-col>
@@ -55,6 +59,8 @@
               label="Email"
               clearable
               outlined
+              :rules="rule"
+              required
             >
             </v-text-field>
           </v-col>
@@ -69,6 +75,8 @@
               label="Telefone"
               clearable
               outlined
+              :rules="rule"
+              required
             >
             </v-text-field>
           </v-col>
@@ -87,21 +95,6 @@
     >
       Cancelar
     </v-btn>
-    <v-dialog
-      v-model="cadastrado"
-      hide-overlay
-      width="300"
-      >
-      <v-card
-        :color="cadastroErro ? 'red' : 'green'"
-      >
-        <v-card-text
-          style="text-align: center"
-        >
-          {{ cadastroErro ? 'Erro ao cadastrar o usuario' : 'Usuario cadastrado com sucesso' }}
-        </v-card-text>
-      </v-card>
-    </v-dialog>
   </v-container>
 </template>
 
@@ -111,6 +104,7 @@ export default {
 
   data () {
     return {
+      valid: false,
       usuario: {
         id: null,
         nome: null,
@@ -118,34 +112,31 @@ export default {
         email: null,
         telefone: null
       },
-      cadastrado: false,
-      cadastroErro: false
+      rule: [
+        v => !!v || 'Este campo é obrigatório!!'
+      ]
     }
   },
   
   methods: {
     async cadastrar () {
       try {
+        if (!this.valid){
+          return this.$toast.warning('O formulário de cadastro não é válido!')
+        }
         let usuario = {
           nome: this.usuario.nome,
           cpfcnpj: this.usuario.cpfcnpj,
           email: this.usuario.email,
           telefone: this.usuario.telefone,
         }
-        let response = await this.$axios.$post('http://localhost:3333/usuarios', usuario);
-        this.cadastrado = true
+        await this.$axios.$post('http://localhost:3333/usuarios', usuario);
+        this.$toast.success('Usuário cadastrado com sucesso')
+        this.$router.push('/usuarios')
       } catch (error) {
-        this.cadastrado = true
-        this.cadastroErro = true
+        this.$toast.error('Erro ao cadastrar o usuário')
       }
     }
-  },
-
-  watch: {
-    cadastrado (val) {
-      if (!val) return
-      setTimeout(() => (this.cadastrado = false, this.cadastroErro = false), 3000)
-    },
   }
 }
 </script>

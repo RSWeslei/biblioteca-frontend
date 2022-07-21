@@ -2,7 +2,7 @@
   <v-container>
     <h1>Cadastro de Autores</h1>
     <hr>
-    <v-form>
+    <v-form v-model="valid">
       <v-container>
         <v-row>
           <v-col>
@@ -29,6 +29,8 @@
               clearable
               outlined
               color="green"
+              :rules="rule"
+              required
             >
             </v-text-field>
           </v-col>
@@ -42,6 +44,8 @@
               label="Email"
               clearable
               outlined
+              :rules="rule"
+              required
               color="green"
             >
             </v-text-field>
@@ -61,21 +65,6 @@
     >
       Cancelar
     </v-btn>
-    <v-dialog
-      v-model="cadastrado"
-      hide-overlay
-      width="300"
-      >
-      <v-card
-        :color="cadastroErro ? 'red' : 'green'"
-      >
-        <v-card-text
-          style="text-align: center"
-        >
-          {{ cadastroErro ? 'Erro ao cadastrar o autor' : 'Autor cadastrado com sucesso' }}
-        </v-card-text>
-      </v-card>
-    </v-dialog>
   </v-container>
 </template>
 
@@ -85,37 +74,35 @@ export default {
 
   data () {
     return {
+      valid: false,
       autor: {
         id: null,
         nome: null,
         email: null
       },
-      cadastrado: false,
-      cadastroErro: false
+      rule: [
+        v => !!v || 'Este campo é obrigatório!!'
+      ]
     }
   },
   
   methods: {
     async cadastrar () {
       try {
+        if (!this.valid){
+          return this.$toast.warning('O formulário de cadastro não é válido!')
+        }
         let autor = {
           nome: this.autor.nome,
           email: this.autor.email
         }
-        let response = await this.$axios.$post('http://localhost:3333/autores', autor);
-        this.cadastrado = true
+        await this.$axios.$post('http://localhost:3333/autores', autor);
+        this.$toast.success('Autor cadastrado com sucesso')
+        this.$router.push('/autores')
       } catch (error) {
-        this.cadastrado = true
-        this.cadastroErro = true
+        this.$toast.error('Erro ao cadastrar o autor')
       }
     }
-  },
-
-  watch: {
-    cadastrado (val) {
-      if (!val) return
-      setTimeout(() => (this.cadastrado = false, this.cadastroErro = false), 4000)
-    },
   }
 }
 </script>

@@ -2,7 +2,7 @@
   <v-container>
     <h1>Cadastro de Livros</h1>
     <hr>
-    <v-form>
+    <v-form v-model="valid">
       <v-container>
         <v-row>
           <v-col>
@@ -26,6 +26,8 @@
               rounded
               placeholder="Titulo"
               color="green"
+              :rules="rule"
+              required
             >
             </v-text-field>
           </v-col>
@@ -40,6 +42,8 @@
               label="Sinopse"
               clearable
               outlined
+              :rules="rule"
+              required
             >
             </v-text-field>
           </v-col>
@@ -57,6 +61,8 @@
               label="Autores"
               item-text="nome"
               item-value="id"
+              :rules="rule"
+              required
             ></v-autocomplete>
           </v-col>
         </v-row>
@@ -73,6 +79,8 @@
               label="Categorias"
               item-text="nome"
               item-value="id"
+              :rules="rule"
+              required
             ></v-autocomplete>
           </v-col>
         </v-row>
@@ -90,21 +98,6 @@
     >
       Cancelar
     </v-btn>
-    <v-dialog
-      v-model="cadastrado"
-      hide-overlay
-      width="300"
-      >
-      <v-card
-        :color="cadastroErro ? 'red' : 'green'"
-      >
-        <v-card-text
-          style="text-align: center"
-        >
-           {{ cadastroErro ? 'Erro ao cadastrar o livro' : 'Livro cadastrado com sucesso' }}
-        </v-card-text>
-      </v-card>
-    </v-dialog>
   </v-container>
 </template>
 
@@ -114,6 +107,7 @@ export default {
 
   data () {
     return {
+      valid: false,
       livro: {
         id: null,
         titulo: null,
@@ -123,8 +117,9 @@ export default {
       },
       categorias: [],
       autores: [],
-      cadastrado: false,
-      cadastroErro: false
+      rule: [
+        v => !!v || 'Esse campo é obrigatório'
+      ]
     }
   },
 
@@ -136,18 +131,20 @@ export default {
   methods: {
     async cadastrar () {
       try {
+        if (!this.valid){
+          return this.$toast.warning('O formulário de cadastro não é válido!')
+        }
         let livro = {
           titulo: this.livro.titulo,
           sinopse: this.livro.sinopse,
           idAutor: this.livro.idAutor,
           idCategoria: this.livro.idCategoria
         }
-        let response = await this.$axios.$post('http://localhost:3333/livros', livro);
-        console.log(response);
-        this.cadastrado = true
+        await this.$axios.$post('http://localhost:3333/livros', livro);
+        this.$toast.success('Livro cadastrado com sucesso')
+        this.$router.push('/livros')
       } catch (error) {
-        this.cadastrado = true
-        this.cadastroErro = true
+        this.$toast.error('Erro ao cadastrar o livro')
       }
     },
 
@@ -159,13 +156,6 @@ export default {
       this.categorias = await this.$axios.$get('http://localhost:3333/categorias');
     }
   },
-
-  watch: {
-    cadastrado (val) {
-      if (!val) return
-      setTimeout(() => (this.cadastrado = false, this.cadastroErro = false), 3000)
-    },
-  }
 }
 </script>
 

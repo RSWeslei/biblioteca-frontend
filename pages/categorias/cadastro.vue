@@ -2,7 +2,7 @@
   <v-container>
     <h1>Cadastro de Categorias</h1>
     <hr>
-    <v-form>
+    <v-form v-model="valid">
       <v-container>
         <v-row>
           <v-col>
@@ -25,6 +25,8 @@
               color="green"
               label="Nome"
               outlined
+              :rules="rule"
+              required
             ></v-text-field>
           </v-col>
         </v-row>
@@ -36,22 +38,6 @@
     >
       Cadastrar
     </v-btn>
-    <v-dialog
-      style="padding-top: 1000"
-      v-model="cadastrado"
-      hide-overlay
-      width="300"
-      >
-      <v-card
-        :color="cadastroErro ? 'red' : 'green'"
-      >
-        <v-card-text
-          
-        >
-          {{ cadastroErro ? 'Erro ao cadastrar a categoria' : 'Categoria cadastrado com sucesso' }}
-        </v-card-text>
-      </v-card>
-    </v-dialog>
     <v-btn
       outlined
       to="/categorias"
@@ -67,35 +53,33 @@ export default {
 
   data () {
     return {
+      valid: false,
       categoria: {
         id: null,
         nome: null
       },
-      cadastrado: false,
-      cadastroErro: false
+      rule: [
+        v => !!v || 'Esse campo é obrigatório'
+      ]
     }
   },
   
   methods: {
     async cadastrar () {
       try {
+        if (!this.valid){
+          return this.$toast.warning('O formulário de cadastro não é válido!')
+        }
         let categoria = {
           nome: this.categoria.nome
         }
-        let response = await this.$axios.$post('http://localhost:3333/categorias', categoria);
-        this.cadastrado = true
+        await this.$axios.$post('http://localhost:3333/categorias', categoria);
+        this.$toast.success('Categoria cadastrada com sucesso')
+        this.$router.push('/categorias')
       } catch (error) {
-        this.cadastrado = true
-        this.cadastroErro = true
+        this.$toast.error('Erro ao cadastrar a categoria')
       }
     }
-  },
-
-  watch: {
-    cadastrado (val) {
-      if (!val) return
-      setTimeout(() => (this.cadastrado = false, this.cadastroErro = false), 3000)
-    },
   }
 }
 </script>

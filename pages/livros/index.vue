@@ -29,7 +29,23 @@
         :items="livros"
         :items-per-page="10"
         class="elevation-1"
-      ></v-data-table>
+      >
+        <template v-slot:item.actions="{ item }">
+          <v-icon
+            small
+            class="mr-2"
+            @click="editItem(item)"
+          >
+            mdi-pencil
+          </v-icon>
+          <v-icon
+            small
+            @click="deletar(item)"
+          >
+            mdi-delete
+          </v-icon>
+        </template>
+      </v-data-table>
     </v-container>
   </v-container>
 </template>
@@ -50,7 +66,6 @@ export default {
         {
           text: 'Titulo',
           align: 'center',
-          sortable: false,
           value: 'titulo'
         },
         {
@@ -64,6 +79,10 @@ export default {
           align: 'center',
           sortable: false,
           value: 'categoria.nome'
+        },
+        { 
+          text: "",
+          value: "actions" 
         }
       ],
       livros: []
@@ -77,6 +96,17 @@ export default {
   methods: {
     async getLivros () {
       this.livros = await this.$axios.$get('http://localhost:3333/livros')
+    },
+    async deletar (livro) {
+      if (confirm(`Deseja deletar o livro com id: ${livro.id} e nome: ${livro.titulo}?`)) {
+        try {
+          let response = await this.$axios.$post('http://localhost:3333/livros/deletar', { id: livro.id });
+          this.$toast.success(response.message)
+          this.getLivros();
+        } catch (error) {
+          this.$toast.error('Erro ao deletar o livro')
+        }
+      }
     }
   }
 }
