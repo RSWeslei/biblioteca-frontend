@@ -117,6 +117,12 @@ export default {
       ]
     }
   },
+
+  created () {
+    if (this.$route?.params?.id){
+      this.getById(this.$route?.params?.id)
+    }
+  },
   
   methods: {
     async cadastrar () {
@@ -130,12 +136,21 @@ export default {
           email: this.usuario.email,
           telefone: this.usuario.telefone,
         }
-        await this.$axios.$post('http://localhost:3333/usuarios', usuario);
-        this.$toast.success('Usuário cadastrado com sucesso')
-        this.$router.push('/usuarios')
+        if (!this.usuario.id){
+          await this.$axios.$post('http://localhost:3333/usuarios', usuario);
+          this.$toast.success('Usuário cadastrado com sucesso')
+          return this.$router.push('/usuarios')
+        }
+
+        await this.$axios.$post(`http://localhost:3333/usuarios/${this.usuario.id}`, usuario);
+        this.$toast.success('Cadastro atualizado com sucesso!');
+        return this.$router.push('/usuarios');
       } catch (error) {
         this.$toast.error('Erro ao cadastrar o usuário')
       }
+    },
+    async getById (id) {
+      this.usuario = await this.$axios.$get(`http://localhost:3333/usuarios/${id}`);
     }
   }
 }

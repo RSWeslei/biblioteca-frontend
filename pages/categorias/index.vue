@@ -34,7 +34,7 @@
           <v-icon
             small
             class="mr-2"
-            @click="editItem(item)"
+            @click="editar(item)"
           >
             mdi-pencil
           </v-icon>
@@ -96,6 +96,12 @@ export default {
           this.$toast.error('Erro ao deletar a categoria')
         }
       }
+    },
+    async editar (categoria) {
+      this.$router.push({
+        name: 'categorias-cadastro',
+        params: { id: categoria.id }
+      })
     }
   }
 }

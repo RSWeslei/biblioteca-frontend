@@ -9,7 +9,7 @@
             <v-text-field
               v-model="autor.id"
               rounded
-              placeholder="Nome"
+              placeholder="Código"
               color="green"
               label="Código"
               clearable
@@ -85,6 +85,11 @@ export default {
       ]
     }
   },
+  created () {
+    if (this.$route?.params?.id){
+      this.getById(this.$route?.params?.id)
+    }
+  },
   
   methods: {
     async cadastrar () {
@@ -96,12 +101,21 @@ export default {
           nome: this.autor.nome,
           email: this.autor.email
         }
-        await this.$axios.$post('http://localhost:3333/autores', autor);
-        this.$toast.success('Autor cadastrado com sucesso')
-        this.$router.push('/autores')
+        if (!this.autor.id){
+          await this.$axios.$post('http://localhost:3333/autores', autor);
+          this.$toast.success('Autor cadastrado com sucesso')
+          return this.$router.push('/autores')
+        }
+
+        await this.$axios.$post(`http://localhost:3333/autores/${this.autor.id}`, autor);
+        this.$toast.success('Cadastro atualizado com sucesso!');
+        return this.$router.push('/autores');
       } catch (error) {
         this.$toast.error('Erro ao cadastrar o autor')
       }
+    },
+    async getById (id) {
+      this.autor = await this.$axios.$get(`http://localhost:3333/autores/${id}`);
     }
   }
 }

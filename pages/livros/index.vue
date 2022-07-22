@@ -34,7 +34,7 @@
           <v-icon
             small
             class="mr-2"
-            @click="editItem(item)"
+            @click="editar(item)"
           >
             mdi-pencil
           </v-icon>
@@ -81,7 +81,7 @@ export default {
           value: 'categoria.nome'
         },
         { 
-          text: "",
+          text: "Editar",
           value: "actions" 
         }
       ],
@@ -97,6 +97,7 @@ export default {
     async getLivros () {
       this.livros = await this.$axios.$get('http://localhost:3333/livros')
     },
+
     async deletar (livro) {
       if (confirm(`Deseja deletar o livro com id: ${livro.id} e nome: ${livro.titulo}?`)) {
         try {
@@ -107,6 +108,12 @@ export default {
           this.$toast.error('Erro ao deletar o livro')
         }
       }
+    },
+    async editar (livro) {
+      this.$router.push({
+        name: 'livros-cadastro',
+        params: { id: livro.id }
+      })
     }
   }
 }

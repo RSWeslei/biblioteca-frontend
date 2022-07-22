@@ -34,7 +34,7 @@
           <v-icon
             small
             class="mr-2"
-            @click="editItem(item)"
+            @click="editar(item)"
           >
             mdi-pencil
           </v-icon>
@@ -114,6 +114,12 @@ export default {
           this.$toast.error('Erro ao deletar o usuario')
         }
       }
+    },
+    async editar (usuario) {
+      this.$router.push({
+        name: 'usuarios-cadastro',
+        params: { id: usuario.id }
+      })
     }
   }
 }

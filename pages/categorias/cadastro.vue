@@ -33,7 +33,7 @@
       </v-container>
     </v-form>
     <v-btn
-      @click="cadastrar"
+      @click="persistir"
       color="green"
     >
       Cadastrar
@@ -63,9 +63,15 @@ export default {
       ]
     }
   },
+
+  created () {
+    if (this.$route?.params?.id){
+      this.getById(this.$route?.params?.id)
+    }
+  },
   
   methods: {
-    async cadastrar () {
+    async persistir () {
       try {
         if (!this.valid){
           return this.$toast.warning('O formulário de cadastro não é válido!')
@@ -73,12 +79,21 @@ export default {
         let categoria = {
           nome: this.categoria.nome
         }
-        await this.$axios.$post('http://localhost:3333/categorias', categoria);
-        this.$toast.success('Categoria cadastrada com sucesso')
-        this.$router.push('/categorias')
+
+        if (!this.categoria.id){
+          await this.$axios.$post('http://localhost:3333/categorias', categoria)
+          this.$toast.success('Cadastro realizado com sucesso!')
+          return this.$router.push('/categorias');
+        }
+        await this.$axios.$post(`http://localhost:3333/categorias/${this.categoria.id}`, categoria);
+        this.$toast.success('Cadastro atualizado com sucesso!');
+        return this.$router.push('/categorias');
       } catch (error) {
         this.$toast.error('Erro ao cadastrar a categoria')
       }
+    },
+    async getById (id) {
+      this.categoria = await this.$axios.$get(`http://localhost:3333/categorias/${id}`);
     }
   }
 }

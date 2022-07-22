@@ -126,6 +126,9 @@ export default {
   created () {
     this.getAutores();
     this.getCategorias();
+    if (this.$route?.params?.id){
+      this.getById(this.$route?.params?.id)
+    }
   },
   
   methods: {
@@ -140,12 +143,22 @@ export default {
           idAutor: this.livro.idAutor,
           idCategoria: this.livro.idCategoria
         }
-        await this.$axios.$post('http://localhost:3333/livros', livro);
-        this.$toast.success('Livro cadastrado com sucesso')
-        this.$router.push('/livros')
+
+        if (!this.livro.id){
+          await this.$axios.$post('http://localhost:3333/livros', livro);
+          this.$toast.success('Livro cadastrado com sucesso')
+          return this.$router.push('/livros')
+        }
+        await this.$axios.$post(`http://localhost:3333/livros/${this.livro.id}`, livro);
+        this.$toast.success('Cadastro atualizado com sucesso!');
+        return this.$router.push('/livros');
       } catch (error) {
         this.$toast.error('Erro ao cadastrar o livro')
       }
+    },
+
+    async getById (id) {
+      this.livro = await this.$axios.$get(`http://localhost:3333/livros/${id}`);
     },
 
     async getAutores () {
