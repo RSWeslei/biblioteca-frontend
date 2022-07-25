@@ -121,6 +121,11 @@ export default {
           icon: 'mdi-account-circle',
           title: 'Usuarios',
           to: '/usuarios'
+        },
+        {
+          icon: 'mdi-calculator',
+          title: 'Carculadora',
+          to: '/carculadora'
         }
       ],
       miniVariant: false,
