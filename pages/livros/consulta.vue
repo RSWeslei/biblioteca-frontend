@@ -13,7 +13,7 @@
             rounded
             color="green"
             :items="livros"
-            item-text="id"
+            item-text="titulo"
             item-value="id"   
           ></v-autocomplete>
         </v-container>
@@ -26,13 +26,13 @@
           </v-btn>
         </v-container>
       </v-form>
-      <v-container v-if="!emprestado">
+      <v-container v-if="!emprestado && emprestado != null">
         <v-row>
           <v-col>
             <h1
               style="color: green;"
             >
-              {{ `O livro está dísponivel`}}
+              {{ `O livro ${this.emprestimo.titulo} está dísponivel`}}
               <v-icon
                 color="green"
               >
@@ -43,12 +43,26 @@
         </v-row>
       </v-container>
       <v-container v-if="emprestado">
+        <h1
+          style="
+            color: red;
+
+          "
+        >{{`O livro '${emprestimo.titulo}' está indisponível`}}</h1>
+        <p>Dados do emprestimo:</p>
+        <hr>
         <v-data-table
           :headers="headers"
           :items="emprestimo.emprestimos"
           :items-per-page="10"
           class="elevation-1"
         >
+        <template v-slot:item.created_at="{ item }">
+          <span>{{ new Date(item.created_at).toLocaleString() }}</span>
+        </template>
+        <template v-slot:item.prazo="{ item }">
+          <span>{{ new Date(item.prazo).toLocaleString() }}</span>
+        </template>
         </v-data-table>
       </v-container>
     </v-card>
@@ -74,13 +88,20 @@ export default {
           value: 'prazo'
         },
         {
-          text: 'Devolucão',
+          text: 'Emprestado em',
           align: 'center',
           sortable: false,
-          value: 'devoluca'
+          value: 'created_at'
+        },
+        {
+          text: 'Usuário',
+          align: 'center',
+          sortable: false,
+          value: 'usuario'
         }
       ],
       emprestimo: {
+        usuario: null,
         idLivro: null,
         emprestimos: []
       },
@@ -93,13 +114,20 @@ export default {
   },
   methods: {
     async consultarEmprestimo () {
-      if (this.emprestimo.idLivro == null){
-        this.$toast.warning('Digite o nome do livro')
-        return
+      try {
+        if (this.emprestimo.idLivro == null){
+          this.$toast.warning('Digite o nome do livro')
+          return
+        }
+        let response = await this.$axios.$post('http://localhost:3333/emprestimos/existente', this.emprestimo)
+        this.emprestimo = response
+        this.emprestado = response.emprestado
+        if (response.usuario){
+          this.emprestimo.emprestimos[0].usuario = response.usuario
+        }
+      } catch (error) {
+        this.$toast.error('Erro ao consultar o livro')
       }
-      let response = await this.$axios.$post('http://localhost:3333/emprestimos/existente', this.emprestimo)
-      this.emprestimo = response
-      this.emprestado = response.emprestado
     },
     async getLivros() {
       this.livros = await this.$axios.$get('http://localhost:3333/livros/')

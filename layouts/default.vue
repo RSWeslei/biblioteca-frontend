@@ -123,6 +123,16 @@ export default {
           to: '/usuarios'
         },
         {
+          icon: 'mdi-magnify',
+          title: 'Consulta de livros',
+          to: '/livros/consulta'
+        },
+        {
+          icon: 'mdi-pistol',
+          title: 'Emprestimos',
+          to: '/emprestimos'
+        },
+        {
           icon: 'mdi-calculator',
           title: 'Carculadora',
           to: '/carculadora'
