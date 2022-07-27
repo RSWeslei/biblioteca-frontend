@@ -15,9 +15,6 @@
             ></v-text-field>
           </v-col>
         </v-row>
-        <v-col>
-          Prazo
-        </v-col>
         <v-row>
           <v-col>
             <v-autocomplete
@@ -36,16 +33,34 @@
             ></v-autocomplete>
           </v-col>
         </v-row>
+          <v-col>
+            Prazo
+          </v-col>
         <v-row>
           <v-col>
             <v-date-picker
               v-model="emprestimo.prazo"
               color="green"
               :rules="rule"
-              locale
               title="Prazo"
               required
             ></v-date-picker>
+          </v-col>
+          <v-col>
+            <v-autocomplete
+              v-model="emprestimo.livros"
+              rounded
+              multiple
+              placeholder="Livros"
+              outlined
+              color="green"
+              :rules="rule"
+              title="Livros"
+              required
+              item-value="id"
+              item-text="titulo"
+              :items="livros"
+            ></v-autocomplete>
           </v-col>
         </v-row>
       </v-container>
@@ -79,6 +94,7 @@ export default {
         livros: []
       },
       usuarios: [],
+      livros: [],
       rule: [
         v => !!v || 'Esse campo é obrigatório'
       ]
@@ -90,6 +106,7 @@ export default {
       this.getById(this.$route?.params?.id)
     }
     this.getUsuarios()
+    this.getLivros()
   },
   
   methods: {
@@ -98,8 +115,14 @@ export default {
         if (!this.valid){
           return this.$toast.warning('O formulário de cadastro não é válido!')
         }
-        await this.$axios.$post(`http://localhost:3333/emprestimos/`, emprestimo)
-        
+        // if (emprestimo.prazo <= new Date(Date.now())){
+        //   this.$toast.warning('A data não pode ser menor do que hoje')
+        //   return
+        // }
+
+        await this.$axios.$post(`http://localhost:3333/emprestimos/`, this.emprestimo)
+        this.$toast.success('Emprestimo cadastrado com sucesso!');
+        return this.$router.push('/emprestimos');
       } catch (error) {
         this.$toast.error('Erro ao cadastrar a emprestimo')
       }
@@ -109,6 +132,9 @@ export default {
     },
     async getUsuarios(){
       this.usuarios = await this.$axios.$get(`http://localhost:3333/usuarios`);
+    },
+    async getLivros(){
+      this.livros = await this.$axios.$get(`http://localhost:3333/livros/avaliable`);
     }
   }
 }

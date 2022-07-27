@@ -37,8 +37,15 @@
           >
             mdi-delete
           </v-icon>
+          <v-icon
+            style="margin-left: 20px"
+            small
+            @click="visualizar(item.id)"
+          >
+            mdi-eye
+          </v-icon>
           <v-btn
-            style="margin-left: 30px"
+            style="margin-left: 20px"
             color="red"
             @click="encerar(item)"
           >
@@ -138,6 +145,12 @@ export default {
       } catch (error) {
         this.$toast.error('Erro ao encerar o empréstimo')
       }
+    },
+    visualizar (id) {
+      this.$router.push({
+        name: 'emprestimos-visualizar',
+        params: { id: id }
+      })
     }
   }
 }

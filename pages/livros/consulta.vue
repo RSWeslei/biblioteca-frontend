@@ -121,6 +121,7 @@ export default {
         }
         let response = await this.$axios.$post('http://localhost:3333/emprestimos/existente', this.emprestimo)
         this.emprestimo = response
+        console.log(JSON.stringify(this.emprestimo));
         this.emprestado = response.emprestado
         if (response.usuario){
           this.emprestimo.emprestimos[0].usuario = response.usuario
